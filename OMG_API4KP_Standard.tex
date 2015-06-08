@@ -91,12 +91,12 @@ draft%
 %% linguistics
 %\usepackage{xspace}
 % English
-\newcommand*{\cf}{cf.\@\xspace}
-\newcommand*{\eg}{e.g.\@\xspace}
-\newcommand*{\etal}{et al.\@\xspace}
-\newcommand*{\ie}{i.e.\@\xspace}
-\newcommand*{\vs}{vs.\@\xspace}
-\newcommand*{\wrt}{w.r.t.\@\xspace}
+\newcommand*{\cf}{cf.\@\quad}
+\newcommand*{\eg}{e.g.\@\quad}
+\newcommand*{\etal}{et al.\@\quad}
+\newcommand*{\ie}{i.e.\@\quad}
+\newcommand*{\vs}{vs.\@\quad}
+\newcommand*{\wrt}{w.r.t.\@\quad}
 % Quotes
 \usepackage[babel]{csquotes} 
 \MakeAutoQuote{“}{”}
@@ -255,7 +255,7 @@ author=,date=,id=,replyto=,type=}{}%
 % cross-reference to a normative reference
 \newcommand*{\nitem}[1]{[#1]}
 % reference from the definition of one term to another defined term
-\newcommand*{\termref}[1]{\index{#1}#1\xspace}
+\newcommand*{\termref}[1]{\index{#1}#1\quad}
 % subject field restriction of a term
 \newcommand*{\subjectfield}[1]{ {\textlangle}#1{\textrangle}}
 % synonym of a term
@@ -269,16 +269,16 @@ author=,date=,id=,replyto=,type=}{}%
 
 
 % requirements (as per Annex H of ISO/IEC Directives, Part 2)
-\newcommand*{\notallowed}{\textbf{not allowed}\xspace}
-\newcommand*{\notrequired}{\textbf{not required}\xspace}
-\newcommand*{\required}{\textbf{required}\xspace}
-\newcommand*{\recommended}{\textbf{recommended}\xspace}
-\newcommand*{\shallnot}{\textbf{shall not}\xspace}
-\newcommand*{\shall}{\textbf{shall}\xspace}
-\newcommand*{\shouldnot}{\textbf{should not}\xspace}
-\newcommand*{\should}{\textbf{should}\xspace}
-\newcommand*{\may}{\textbf{may}\xspace}
-\newcommand*{\hasto}{\textbf{has to}\xspace}
+\newcommand*{\notallowed}{\textbf{not allowed}\quad}
+\newcommand*{\notrequired}{\textbf{not required}\quad}
+\newcommand*{\required}{\textbf{required}\quad}
+\newcommand*{\recommended}{\textbf{recommended}\quad}
+\newcommand*{\shallnot}{\textbf{shall not}\quad}
+\newcommand*{\shall}{\textbf{shall}\quad}
+\newcommand*{\shouldnot}{\textbf{should not}\quad}
+\newcommand*{\should}{\textbf{should}\quad}
+\newcommand*{\may}{\textbf{may}\quad}
+\newcommand*{\hasto}{\textbf{has to}\quad}
 
 \newenvironment{Grammar}
  {%\texonly{\footnotesize}
@@ -333,7 +333,7 @@ author=,date=,id=,replyto=,type=}{}%
 \newcommand{\pref}[1]{\pagerefname~\pageref{#1}}
 
 
-\newcommand{\rtm}[0]{\small{\textregistered\xspace}}
+\newcommand{\rtm}[0]{\small{\textregistered\quad}}
 \newcommand{\OMGparagraph}[1]{
 \vspace{3pt}
 {\centerline {#1}}
@@ -522,7 +522,7 @@ Use, duplication or disclosure by the U.S. Government  is subject to the restric
   the Federal Acquisition Regulations and its successors, as applicable. The specification copyright owners are as indicated above and may be contacted through the Object Management Group, 140 Kendrick Street, Needham, MA 02494, U.S.A.
 
 \OMGparagraph{TRADEMARKS}
-MDA\rtm, Model Driven Architecture\rtm, UML\rtm, UML Cube logo\rtm, OMG Logo\rtm, COR\-BA\rtm\ and XMI\rtm\ are registered trademarks of the Object Management Group, Inc., and Object Management Group\texttrademark\xspace, OMG\texttrademark\xspace , Unified Modeling Language\texttrademark\xspace, Model Driven Architecture Logo\texttrademark\xspace, Model Driven Architecture Diagram\texttrademark\xspace, CORBA logos\texttrademark\xspace, XMI Logo\texttrademark\xspace, CWM\texttrademark\xspace, CWM Logo\texttrademark\xspace, IIOP\texttrademark\xspace , IMM\texttrademark\xspace , MOF\texttrademark\xspace , OMG Interface Definition Language (IDL)\texttrademark\xspace , and OMG  SysML\texttrademark\xspace\   are trademarks of the Object Management Group. All other products or company names mentioned are used for identification purposes only, and may be trademarks of their respective owners.
+MDA\rtm, Model Driven Architecture\rtm, UML\rtm, UML Cube logo\rtm, OMG Logo\rtm, COR\-BA\rtm\ and XMI\rtm\ are registered trademarks of the Object Management Group, Inc., and Object Management Group\texttrademark\quad, OMG\texttrademark\quad , Unified Modeling Language\texttrademark\quad, Model Driven Architecture Logo\texttrademark\quad, Model Driven Architecture Diagram\texttrademark\quad, CORBA logos\texttrademark\quad, XMI Logo\texttrademark\quad, CWM\texttrademark\quad, CWM Logo\texttrademark\quad, IIOP\texttrademark\quad , IMM\texttrademark\quad , MOF\texttrademark\quad , OMG Interface Definition Language (IDL)\texttrademark\quad , and OMG  SysML\texttrademark\quad\   are trademarks of the Object Management Group. All other products or company names mentioned are used for identification purposes only, and may be trademarks of their respective owners.
 
 \OMGparagraph{COMPLIANCE}
 The copyright holders listed above acknowledge that the Object Management Group (acting itself or through its designees) is and shall at all times be the sole entity that may authorize developers, suppliers and sellers of computer
@@ -561,7 +561,7 @@ they may find by completing the Issue Reporting Form listed on the main web page
 Founded in 1989, the Object Management Group, Inc. (OMG) is an open membership, not-for-profit computer industry standards consortium that produces and maintains computer industry specifications for interoperable, portable, and
  reusable enterprise applications in distributed, heterogeneous environments. Membership includes Information Technology vendors, end users, government agencies, and academia. 
 
-OMG member companies write, adopt, and maintain its specifications following a mature, open process. OMG's specifications implement the Model Driven Architecture\textregistered\xspace (MDA\textregistered\xspace), maximizing ROI through a full-lifecycle approach to enterprise integration that covers multiple operating systems, programming languages, middleware and networking infrastructures, and software development environments. OMG's specifications include: UML\textregistered\xspace (Unified Modeling Language\texttrademark\xspace); CORBA\textregistered\xspace (Common Object Request Broker Architecture); CWM\texttrademark\xspace (Common Warehouse Metamodel); and industry-specific standards for dozens of vertical markets.
+OMG member companies write, adopt, and maintain its specifications following a mature, open process. OMG's specifications implement the Model Driven Architecture\textregistered\quad (MDA\textregistered\quad), maximizing ROI through a full-lifecycle approach to enterprise integration that covers multiple operating systems, programming languages, middleware and networking infrastructures, and software development environments. OMG's specifications include: UML\textregistered\quad (Unified Modeling Language\texttrademark\quad); CORBA\textregistered\quad (Common Object Request Broker Architecture); CWM\texttrademark\quad (Common Warehouse Metamodel); and industry-specific standards for dozens of vertical markets.
 
 More information on the OMG is available at http://www.omg.org/.
 
