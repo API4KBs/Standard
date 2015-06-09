@@ -60,7 +60,7 @@ draft%
 \usepackage[scaled=.9]{helvet}
 
 % set up Unicode symbols
-\DeclareUnicodeCharacter{21A6}{\ensuremath{\mapsto}}
+\usepackage{declare-unicode}
 
 
 % Keyword Index 
@@ -68,13 +68,12 @@ draft%
 \makeindex
 % used in definition of \termref, \termdefinition  
 
-\newcommand{\thisindex}{Application Programming Interface for Knowledge Platforms (API4KP)}
 
 %%
-\newcommand*{\OMGSpec}{}\def\OMGSpec/{OMG Specification}
-\newcommand*{\THIS}{}\def\THIS/{API4KP}
+\usepackage{omg} % OMG-specific macros
+\usepackage{this} % macros specific to this submission
 
-%% Math
+%% Math Macros
 \usepackage{math}
 \usepackage{hetonto-subset}
 
@@ -95,13 +94,7 @@ draft%
 
 
 %% linguistics
-% English
-\newcommand*{\cf}{cf.\@\enspace}
-\newcommand*{\eg}{e.g.\@\enspace}
-\newcommand*{\etal}{et al.\@\enspace}
-\newcommand*{\ie}{i.e.\@\enspace}
-\newcommand*{\vs}{vs.\@\enspace}
-\newcommand*{\wrt}{w.r.t.\@\enspace}
+\usepackage{english}
 % Quotes
 \usepackage[babel]{csquotes} 
 \MakeAutoQuote{“}{”}
