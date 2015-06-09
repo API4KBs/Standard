@@ -56,6 +56,10 @@ draft%
 
 \newcommand{\dolindex}{Application Programming Interface for Knowledge Platforms (API4KP)}
 
+%%
+\newcommand{\IS}{OMG Specification\quad}
+\newcommand*{\DOL}{\ensuremath{\mathsf{API4KP}}\quad}
+
 %% Math
 % \usepackage{mathtools}
 % reintroducing a math-style \begin{definition}…\end{definition} environment
@@ -854,8 +858,6 @@ language can be used as-is in DOL, by reference to its IRI. See \ref{sec:existin
 %
 6.8(c)		&
 Proposals establishing actually (or making this at least possible in theory) OntoIOp conformance of more logical languages and translations will be favored. 	&
-We establish conformance of OWL 2 (annex \ref{a:owl}), Common Logic (annex \ref{a:cl}), RDF and RDF Schema (annex \ref{a:rdfs}), UML class diagrams (annex \ref{a:uml-class}) and \CASL (annex \ref{a:casl})
-with DOL.
 	\\ \hline
 
 \end{longtable}
@@ -1112,13 +1114,6 @@ $I_1$) to language $L_2$ (based on institution $I_2$) is conforming
 with DOL if it is based on a logic translation such the following
 diagram commutes (i.e.\ following both possible paths from 
 $L_1$ to $I_2$ leads to the same result):
-$$\xymatrix{
-L_1 \ar[rrrrr]^{\Text{mapping between abstract syntaxes}} \ar[ddd]_{\Text{abstract syntax to institution}}
-&&&&& L_2 \ar[ddd]^{\Text{abstract syntax to institution}}\\
-&&&&&\\
-&&&&&\\
-I_1\ar[rrrrr]^{\Text{institution (co)morphism}} &&&&& I_2
-}$$
 Language
 translations \may also translate the structuring language aspect, in
 this case, they \shall preserve the semantics of the structuring
@@ -1604,7 +1599,9 @@ values (\eg, zero, one, and infinity). \nisref{IETF/RFC 3986:2005, Section 1.1}
 \begin{definitions}
   \termdefinition{annotation}{additional information without a logical semantics that is attached to an element\index{element (of an OMS)} of an \termref{OMS}.}
   \begin{note}\label{note:annotation-rdf}
-Formally, an annotation is given as a $(\text{subject}, \text{predicate}, \text{object})$ triple as 
+Formally, an annotation is given as a
+%$$(\text{subject}, \text{predicate}, \text{object})$$
+triple as 
 defined by \nisref{SOURCE: W3C/TR REC-rdf11-concepts:2014, Section 3.1}.  The subject of an annotation 
 is an element of an OMS.  The predicate is an RDF property defined in an external OMS and 
 describes in what way the annotation object is related to the annotation subject.
@@ -2261,7 +2258,7 @@ translation that conform with \DOL  (\emph{normative}).
 informative annexes: OWL2 (annex \ref{a:owl}), Common Logic
 (annex~\ref{a:cl}), RDF and RDF Schema (annex~\ref{a:rdfs}), UML class
 diagrams (annex~\ref{a:uml-class}, EMOF (annex~\ref{a:EMOF}), and
-\CASL (annex \ref{a:casl}).
+%\CASL (annex \ref{a:casl}).
 
 \medskip \noindent 
 Annex \ref{a:graph}  provides a core graph of logics and translations, covering those OMS languages
@@ -2500,23 +2497,13 @@ ontologies, OWL reasoners are not able to consider the  FOL axioms. Hence, the i
 contained in these axioms is lost.
 
 DOL allows the user to replace such informal annotations by formal axioms in a suitable ontology 
-language. The relation between the \OWL ontology and the FOL axioms is that of a heterogeneous 
-import. In the result, both the \OWL and the FOL axioms are amenable to, e.g., automated consistency 
+language. The relation between the ontology and the FOL axioms is that of a heterogeneous 
+import. In the result, both the and the FOL axioms are amenable to, e.g., automated consistency 
 checks and theorem proving. Hence, all available information can be used in the reasoning process.
-For example, the ontology below extends the \OWL definition of \texttt{isProperPartOf} as an asymmetric relation
+For example, the ontology below extends the definition of \texttt{isProperPartOf} as an asymmetric relation
 with a first-order axiom (in Common Logic) asserting that the relation is also transitive.
-\begin{lstlisting}[basicstyle=\small\ttfamily,language=dolText,morekeywords={logic,ontology,props,ObjectProperty,Class,DisjointUnionOf,SubClassOf,Characteristics,Transitive,Asymmetric,SubPropertyOf,DisjointClasses,EquivalentTo,inverse,only,forall,iff,if,or,exists},escapechar=@,mathescape]
-logic CommonLogic
-ontology Parthood =
-ObjectProperty: isProperPartOf  
-  Characteristics: Asymmetric  
-  SubPropertyOf: isPartOf 
-with translation trans:SROIQtoCL
-then
-  (if (and (isProperPartOf x y) (isProperPartOf y z)) 
-        (isProperPartOf x z))
-\end{lstlisting}
-\OWL can express transitivity, but not together with asymmetry.
+
+can express transitivity, but not together with asymmetry.
 
 \section{Use Case Onto-2: Ontology Integration by Means of a Foundational Ontology}
 One major use case for ontologies in industry is to achieve interoperability and data integration. 
@@ -2545,51 +2532,6 @@ contains alignments\index{alignment} between a number of foundational ontologies
 entities. We select three such ontologies, containing spatial and temporal concepts: DOLCE\footnote{See \url{http://www.loa.istc.cnr.it/DOLCE.html}}, GFO\footnote{See \url{http://www.onto-med.de/ontologies/gfo/}} and BFO\footnote{See \url{http://www.ifomis.org/bfo/}}, and present alignments between them 
 using \DOL syntax:
 
-\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=dolText,morekeywords={props,ObjectProperty,Class,DisjointUnionOf,SubClassOf,Characteristics,Transitive,Asymmetric,SubPropertyOf,DisjointClasses,EquivalentTo,inverse,only,forall,iff,if,or,exists,distributed,from},escapechar=@,mathescape]
-%prefix(
-           gfo: <http://www.onto-med.de/ontologies/>
-           dolce: <http://www.loa-cnr.it/ontologies/>
-           bfo: <http://www.ifomis.org/bfo/>
-           
-        )%
-logic OWL
-
-alignment DolceLite2BFO :
-  dolce:DOLCE-Lite.owl
-  to
-  bfo:1.1 =
- endurant = IndependentContinuant,
- physical-endurant = MaterialEntity,
- physical-object = Object,   perdurant = Occurrent,
- process = Process,          quality = Quality,
- spatio-temporal-region = SpatiotemporalRegion,
- temporal-region = TemporalRegion,  space-region = SpatialRegion
-
-alignment DolceLite2GFO :
-  dolce:DOLCE-Lite.owl to gfo:gfo.owl =
- 	particular = Individual, endurant = Presential,
- 	physical-object = Material_object, amount-of-matter = Amount_of_substrate,
- 	perdurant = Occurrent, 	quality = Property,
- 	time-interval = Chronoid, generic-dependent < necessary_for,
- 	part < abstract_has_part, part-of < abstract_part_of,
- 	proper-part  <	 has_proper_part,  	proper-part-of  < proper_part_of,
- 	generic-location < occupies, 	generic-location-of < occupied_by
-
-alignment BFO2GFO :
-  bfo:1.1 to gfo:gfo.owl =
-	Entity = Entity, Object = Material_object,
-	ObjectBoundary  = Material_boundary, Role < Role ,
- 	Occurrent = Occurrent, 	Process = Process, Quality = Property
- 	SpatialRegion 	= Spatial_region, TemporalRegion = Temporal_region 	
-\end{lstlisting}
-
-We can then combine the ontologies while taking into account the semantic dependencies given by the alignments using
-\DOL combinations:
-
-\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=dolText,morekeywords={props,ObjectProperty,Class,DisjointUnionOf,SubClassOf,Characteristics,Transitive,Asymmetric,SubPropertyOf,DisjointClasses,EquivalentTo,inverse,only,forall,iff,if,or,exists,distributed,from},escapechar=@,mathescape]
-ontology Space =
- combine BFO2GFO, DolceLite2GFO, DolceLite2BFO
-\end{lstlisting} 
 
 \section{Use Case Onto-3: Module Extraction From Large Ontologies}\label{onto-3}
 Especially in the biomedical domain, ontologies tend to become very large (e.g., SNOMED CT, FMA) 
@@ -2607,13 +2549,13 @@ supports the description of such subsets (modules) of ontologies, as well as the
 integration.
 
 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.6\textwidth]{useCaseOnto3.png}
-\caption{JRAO  -- Example for Module Extraction}
-\label{JRAO}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{useCaseOnto3.png}
+%\caption{JRAO  -- Example for Module Extraction}
+%\label{JRAO}
+%\end{center}
+%\end{figure}
 
 
 \begin{lstlisting}[basicstyle=\ttfamily,language=dolText,morekeywords={props,ObjectProperty,Class,DisjointUnionOf,SubClassOf,Characteristics,Transitive,Asymmetric,SubPropertyOf,DisjointClasses,EquivalentTo,inverse,only,forall,iff,if,or,exists,distributed,extract},escapechar=@,mathescape]
@@ -6751,7 +6693,7 @@ for $a,b\in{\mathcal I}, R\in{\mathcal R}$).   Satisfaction is the
 standard satisfaction of description logics.
 
 The logic \SROIQ \cite{SROIQ}, which is the logical core of the Web Ontology
-Language \OWL 2 DL\footnote{See also \url{http://www.w3.org/TR/owl2-overview/}}, extends $\ALC$
+Language 2 DL\footnote{See also \url{http://www.w3.org/TR/owl2-overview/}}, extends $\ALC$
 with the following constructs: (i) complex role inclusions such as $R \circ S \sqsubseteq S$
 as well as simple role hierarchies such as $R \sqsubseteq S$,
 assertions for symmetric, transitive, reflexive, asymmetric and
@@ -6763,7 +6705,7 @@ restrictions ($\mathcal{Q}$). For details on the rather complex
 grammatical restrictions for \SROIQ (e.g.\ regular role inclusions,
 simple roles) compare \cite{SROIQ}.
 
-\OWL \emph{profiles} are syntactic restrictions of \OWL~2~DL that support specific modeling and reasoning tasks, %\cite{w3c:owl2-profiles}, 
+\emph{profiles} are syntactic restrictions of \OWL~2~DL that support specific modeling and reasoning tasks, %\cite{w3c:owl2-profiles}, 
 and which are accordingly based on DLs with appropriate computational properties. Specifically, \OWL~2~\EL is designed for ontologies containing large numbers of concepts or relations, \OWL~2~\QL to support query answering over large amounts of data, and \OWL~2~\RL to support scalable reasoning using rule languages (\EL, \QL, and \RL for short) .
  
 We sketch the logic \ELDL which is underlying the \EL profile.\footnote{To be exact, \EL adds various `harmless' expressive means and syntactic sugar to \ELDL resulting in the DL \ELDL$++$. % \cite{BaaderEtAl-OWLED08DC}; for further details see also \cite{w3c:owl2-profiles}.
@@ -6913,7 +6855,7 @@ like
 \texttt{rdfs:subClassOf}, \texttt{rdfs:subPropertyOf}, \texttt{rdfs:member}, \texttt{rdfs:Container},
 \texttt{rdfs:ContainerMembershipProperty}.
 
-There is also \OWL Full, an extension of \RDFS with resources
+There is also Full, an extension of \RDFS with resources
 such as \texttt{owl:Thing} and \texttt{owl:oneOf}, tailored towards the representation of
 \OWL~\cite{W3C:REC-owl2-rdf-based-semantics-20091027}.
 
@@ -7950,7 +7892,7 @@ logical interoperability:
   \item \RL $\to$ $\OWL$
   \item $\RDF \to \RDFS$
   \item $\RDFS \to \OWL$
-  \item $\OWL  \to \CASL.\FOL$
+  \item $ \to \CASL.\FOL$
   \item $\CASL.\FOL \to TPTP$
   \item $TPTP \to \CASL.\FOL$
   \item $\CASL.FOL \to \CL$
@@ -8128,7 +8070,7 @@ $(s,p,o)$ is translated to the \SROIQ(D) sentence
   This ensures that the model translation can add the built-ins.
 %\Til{What if the OWL model satisfies more triples than the built-ins?}
 
-\ssclause{$\OWL \rightarrow FOL$}
+\ssclause{$\rightarrow FOL$}
 
 \sssclause{Translation of signatures}
 
@@ -8226,7 +8168,7 @@ by using $rel^M(int^M(P))$ and restricting to the arity of $P$;
 similarly for function symbols (using $fun^M$). Both the satisfaction condition
 and model-expansiveness of the comorphism are straightforward.
 
-\ssclause{$\OWL \rightarrow \CL$}
+\ssclause{$\rightarrow \CL$}
 
 This comorphism is the composition of the comorphisms described in the previous
 two sections.
