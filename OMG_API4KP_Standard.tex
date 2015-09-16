@@ -7,10 +7,12 @@
 %\pretendfinaltrue 
 \pretendfinalfalse
 
-% Real PDF comments, or "paper" margin notes (using todonotes package)?
+% Real PDF comments, or 
+% "paper" margin notes (using todonotes or ednotes package)?
 \newif\ifpdfcomment
-%\pdfcommenttrue
-\pdfcommentfalse
+\pdfcommenttrue
+%\pdfcommentfalse
+\newcommand{\mycomment}{}
 
 \documentclass[10pt,fleqn,%
 \ifpretendfinal
@@ -28,7 +30,13 @@ draft%
   \usepackage[hide]{ed}
 \else  
   \usepackage[show]{ed}
-\fi  
+\fi 
+
+% Use real todonotes package or work-around with ednotes
+\newif\iftodo
+%\todotrue [TA] This is not correctly. It is necessary to renewcommand{\todonote}, so for now this options does the same thing as \todofalse
+\todofalse
+
 
 \usepackage{uml}
 
@@ -37,7 +45,7 @@ draft%
 \ifpretendfinal
   \newcommand{\red}[1]{#1} 
 \else  
-  \newcommand{\red}[1]{\color{red}{#1}}
+  \newcommand{\red}[1]{{\color{red}{#1}}}
 \fi
 
 % language definitions
@@ -176,7 +184,6 @@ author=,date=,id=,replyto=,type=}{}%
 \else
 \usepackage[draft]{pdfcomment}
 \fi
-\fi
 
 \newcommand*{\todonote}[2][]{%
 \initComment{#1}%
@@ -200,45 +207,38 @@ author=,date=,id=,replyto=,type=}{}%
 
 % Hyperlinks don't work inside pdfcomment's PDF comments :-(
 \newcommand*{\todonoteURL}[1]{#1}
-%\else % \ifpdfcomment
-%\ifdr@ftd@c
-%\usepackage[show]{ed}
-%\else
-%\usepackage[hide]{ed}
-%\fi
-% \usepackage[obeyDraft,textsize=tiny]{todonotes} % must load after tikz
+\else % \ifpdfcomment
+  \iftodo
+     \usepackage[textsize=tiny]{todonotes} % must load after tikz
+   \else % \iftodo
 
-%FN I commented the above out, because I could not get it to work, instead I include
- 
+      \newcommand*{\todonote}[2][]{
+        \initComment{#1}%
+        % TODO set color according to type
+        % TODO display author (unless empty)
+        % TODO display date (unless empty)
+        \ednote{TODO: #2}
+        }
 
+       \newcommand*{\reply}[2][]{
+         \initComment{#1}%
+         % TODO set color according to type
+         % TODO display author (unless empty)
+         % TODO display date (unless empty)
+         \ednote{Reply: \CommentPrefix #2}}
 
+       \newcommand*{\markupcomment}[3][]{
+         \initComment{#1}%
+         % TODO set color according to type
+         % TODO display author (unless empty)
+         % TODO display date (unless empty)
+         \ednote{\CommentPrefix #3}#2}
+ \fi % \iftodo
+ % dummy versions of some pdfcomment commands
+ \renewcommand*{\textLF}{\\}
 
-\renewcommand*{\todonote}[2][]{% FN: Changed newcommand to renewcommand
-\initComment{#1}%
-% TODO set color according to type
-% TODO display author (unless empty)
-% TODO display date (unless empty)
-\ednote{\CommentPrefix #2}}
-
-\renewcommand*{\reply}[2][]{% FN: Changed newcommand to renewcommand
-\initComment{#1}%
-% TODO set color according to type
-% TODO display author (unless empty)
-% TODO display date (unless empty)
-\ednote{Reply: \CommentPrefix #2}}
-
-\renewcommand*{\markupcomment}[3][]{% FN: Changed newcommand to renewcommand
-\initComment{#1}%
-% TODO set color according to type
-% TODO display author (unless empty)
-% TODO display date (unless empty)
-\ednote{\CommentPrefix #3}#2}
-
-% dummy versions of some pdfcomment commands
-\renewcommand*{\textLF}{\\}
-
-\renewcommand*{\todonoteURL}[1]{\url{#1}}
-%\fi % \ifpdfcomment FN: commented this out
+  \newcommand*{\todonoteURL}[1]{\url{#1}}
+\fi % \ifpdfcomment
 \makeatother
 \newcommand*{\ticket}[1]{\todonoteURL{http://trac.informatik.uni-bremen.de:8080/OntoIOp/ticket/#1}}
 
@@ -393,7 +393,13 @@ author=,date=,id=,replyto=,type=}{}%
 %}{\end{tabbing}}
 
 %\usepackage{cleveref}
-\renewcommand*{\todonote}[2][]{}
+\renewcommand*{\todonote}[2][]{
+        \initComment{#1}%
+        % TODO set color according to type
+        % TODO display author (unless empty)
+        % TODO display date (unless empty)
+        \ednote{TODO: #2}
+        }
 
 %the afterpage is used to introduce a blank page
 \usepackage{afterpage}
@@ -685,17 +691,294 @@ Clause 0 of this document contains information specific to the OMG submission pr
 \hline
 \endlastfoot
 
-%6.5.1 & Reference information model &
-%   \\ \hline
+6.5.1 & Reference information model &
+   \\ \hline
 %
 6.5.1.1 & 
-Submitters shall specify a reference informa
-tion model for the terms used in the 
+Submitters shall specify a reference information model for the terms used in the 
 descriptions of the service functions and the interface parameters. This model 
 should be a PIM in the UML or MOF form. This model shall be closely aligned 
 with the W3C specification for OWL and RDF.  &
+The API4KP ontology, expressed in OWL and converted to UML, satisfies this requirement.
 	\\ \hline
 %
+6.5.2 & Retrieval of raw information from KB -
+Proposals shall provide a PIM that defines at least the following capabilities: &
+	\\ \hline
+6.5.2.1 &
+ List the ontologies known in the KB; &
+\mycomment{Applied to a KR}
+This proposal introduces the concept of a structured Knowledge Resource, as a generalization of the RFPs concept of a KB.
+An optional section of the Description of a Structured Knowlege Resource is a listing of the identifiers of the Basic Knowledge Resources which are its "leaf components". 
+\mycomment{  TODO this should either restrict to collection-type Structured KRs or adapted to non-collection types}
+\mycomment{Applied to a KP}
+There are two orthogonal views of a KP: in regard to its Knowledge content and its (software) Components.
+Another action that is made available is getting the KRs that are registered in an immutable KP.
+Another action is to get the Components of an immutable KP.
+\mycomment{ Applied to a KP Manager}
+Yet another action is getting the (mutable or immutable) KPs that are managed by a KP Manager.
+	\\ \hline
+6.5.2.2 &
+ List the classes known in a given ontology; &
+ % Applied to a Basic KR
+This proposal generalizes to the case of Knowledge Resources which are not traditional ontologies. "Class" is a syntactic category of OWL DL. An optional section of the Description of a Basic Knowledge Resource is a listing of vocabulary that is mentioned in it, optionally grouped and/or filtered by the syntactic categories of its language.
+ % Applied to a Structured KR
+ Another action is getting a description of syntactic decomposition of the leaves of the Structured KR, without flattening or translating into the focus language. The requested syntactic category is language-neutral, e.g. "Names" or "Truth-valued Formulas".
+ % Applied to a KP, KP Manager or other Communicating Entity
+ An Action on a Communicating Entity of this type is getting its Roles.
+ % Applied to a Role
+ Get the Proficiencies of a Role.
+ % Applied to a Proficiency
+ Get the Functionalities exposed by a Proficiency.
+  % Applied to an Operation
+  Get the Actions that are composed to defined the Operation
+ % ToDo these relationships need to be sorted out in regard to abstraction level.
+	\\ \hline
+6.5.2.3 &
+ List the properties known in a given ontology; &
+ See 6.5.2.2
+	\\ \hline
+6.5.2.4 &
+ List the datatypes known in a given ontology; &
+ See 6.5.2.2
+	\\ \hline
+6.5.2.5 &
+ List the explicit sub-classes of a given class; &
+This proposal generalizes to the case of Knowledge Resources which are not traditional ontologies. A "subclass" statement is a syntactic category of formula in OWL DL. In other languages, a request for subclass relationships may require inference.
+The principal idea in this requirement, and several others below, is that it should be possible to filter a Knowledge Resource according to a specified syntactic category of formula, according to its language.
+This proposal provides a class of Syntactic Filter Operations
+which takes as input a KR and a syntactic pattern
+and returns a new KR.
+% TODO add "syntactic pattern" to the glossary
+	\\ \hline
+6.5.2.6 &
+ List the explicit super-classes of a given class; &
+ See 6.5.2.5.
+	\\ \hline
+6.5.2.7 &
+ List the explicit equivalent classes to a given class; &
+ See 6.5.2.5.
+	\\ \hline
+6.5.2.8 &
+ List the explicit sub-properties of a given property; &
+ See 6.5.2.5.
+	\\ \hline
+6.5.2.9 &
+ List the explicit super-properties of given property; &
+ See 6.5.2.5.
+	\\ \hline
+6.5.2.10 &
+ Get the reference URI of a given ontology, class or property; &
+ In this proposal, every Knowledge Source has an identifier appropriate to its platform; in the case that the platform is the Semantic Web, that identifier is an IRI.
+ A Knowledge Source may have also have annotations.
+ An optional section in the Description of a Knowledge Source includes its annotations.
+  Similarly, languages may allow annotations to be attached to parts of a Knowledge Source or entities mentioned in a Knowledge Source, as long as they are denoted by an identifier.
+ This proposal also provides a class of Discover Operations, which return a listing of the identifiers known to a Knowledge Platform that satisfy a query of its annotations.
+ Further, this operation may be considered a lifting operation, where the KnowledgeItem is identified by a URL
+ and its Manifestion or Expression has a different IRI.
+ %ToDO does this capture the original intent?
+	\\ \hline
+6.5.2.11 &
+ Get the specification of a given class: enumerated, restriction, equivalent specification along with the parameters (constraints...) of this specification;&
+ See 6.5.2.5.
+	\\ \hline
+6.5.2.12 &
+ Get the specification of a given property: datatype, object, equivalent, inverse property along with the parameters (constraints, classes at both ends...) of this specification;&
+ See 6.5.2.5.
+	\\ \hline
+6.5.2.13 &
+ Get the ‘Top’ (DL terminology) class (equivalent to owl:Thing);&
+ %ToDo Ask about the intent of this task
+ See 6.5.2.5.
+	\\ \hline
+6.5.2.14 &
+ Test if two classes are “structurally equivalent” (see [SS]).&
+ In this proposal, a class of Parse Operations are provided that return the (abstract syntax) Expression of a Knowledge Resource Manifestation. If two Expressions are "equal", then their Manifestations are structurally equivalent.
+%ToDo Ask about the intent of this task
+ 	\\ \hline
+6.5.3 & Modification and creation of raw information in KB - Proposals shall provide a PIM that defines at least the following capabilities: &
+	\\ \hline
+6.5.3.1 &
+ Create a class in a given ontology from its reference URI and its specification: enumerated, restriction, equivalent...;&
+ An Operation that creates a BasicExpression in the abstract syntax of a particular language, e.g. OWL, RDF, CL, and adds it to an existing BasicExpression in the same language
+ is defined in terms of a composition of Actions. The input to the first Action is a KRR language, and the output is an Action that takes a concrete syntactic category in that KRR language. The next output is an Action that takes a tuple containing the parameters required by the constructor of that syntactic category  (or equivalently a curried series of Actions, one for each parameter) and returns the Expression. Additional (curried) Actions takes an IRI and an Expression, and return the Expression annotated with the IRI.
+ An Adding Operation is used to add the Expression to an existing KR.
+ If the existing KR is Basic, then the new KR will also be Basic.
+ If the exiting KR is Structured, then the new KR will also be Structured.
+ In the case of an existing Basic KR, the Adding Operation first creates a Collection-Structured KR (e.g. Set or List type, as appropriate) containing the existing KR and the new BasicExpression.
+ Then a Merge Operation is used combine these into a single new Basic KR.
+ If the existing KR is Structured, then Expression is incorporated into that Structure.
+ KPs may partially support this operation for a particular set of languages.
+	\\ \hline
+6.5.3.2 &
+ Delete a class;&
+ % Structured Expression 
+ Delete a collection of Expressions E1 from a Structured Expression E2. - what this means depends on the Structure (i.e. consider deleting a list - order must be matched, versus deleting a set of expressions from a list structure)
+ Delete all Expressions from a Structured Expression E2 that satisfy a specific pattern.
+ % Basic Expression
+Modify a BasicExpression E2 by applying a delete operation to one of its parameters that is of Collection type.
+	\\ \hline
+6.5.3.3 &
+ Create a property in a given ontology from its reference URI and its
+specification: datatype, object, equivalent, inverse...:&
+See 6.5.3.1
+	\\ \hline
+6.5.3.4 &
+ Delete a property. &
+See 6.5.3.2
+	\\ \hline
+6.5.4 &
+ Querying a KB&
+	\\ \hline
+6.5.4.1 &
+ Proposals shall provide a PIM that specifies the set of standardized expressive powers that a KB may know. For each of these expressive powers, proposals shall clearly specify the semantics.&
+ For declarative semantics, expressive power is specified in terms of a preorder on logics.
+ % TODO Define expressive power for effective semantics.
+ 
+	\\ \hline
+6.5.4.2 &
+Proposals shall provide a PIM that specifies the set of standardized reasoning tasks that a KB may perform. For each of these reasoning tasks, proposals shall clearly specify the semantics. &
+  %TODO start with OntoIOp, and extend as needed
+	\\ \hline
+6.5.4.3 &
+ Proposals shall provide a PIM that defines the following capabilities: &
+	\\ \hline
+6.5.4.3.1 &
+ Get the expressive power of the KB;&
+ What is the minimal sublogic in which a KR can be expressed?
+ What is the maximal logic that a KP supports?
+	\\ \hline
+6.5.4.3.2 &
+ Check if a given expressive power is supported by a KB;&
+    Compare two logics in regard to expressive power.
+    Compare the given expressive power to the set of expressive powers supported by a KP.
+	\\ \hline
+6.5.4.3.3 &
+ Get a list of reasoning tasks supported by the KB;&
+    Get all the Functionalities required by the Proficiencies of a KP
+    Filter a set of Functionalities by type, e.g. Reasoning Functionalities
+	\\ \hline
+6.5.4.3.4 &
+ Check if a given list of reasoning tasks are supported by a KB;&
+   Set containment applied to sets of Functionalities
+	\\ \hline
+6.5.4.4 &
+ Proposals shall provide a PIM that allows at least the following reasoning tasks (on ontologies):&
+	\\ \hline
+6.5.4.4.1 &
+ Check the consistency of a given ontology;&
+ The Query Operation allows checking of inconsistency by determining if the KR
+ entails a contradiction. An alias ConsistencyCheck Operation is defined.
+	\\ \hline
+6.5.4.4.2 &
+ Check the entailment of a given ontology by another ontology;&
+ The Query Operation
+	\\ \hline
+6.5.4.4.3 &
+ Check the equivalency between two given ontologies;&
+ Conjunction of two Query operations
+	\\ \hline
+6.5.4.5 &
+Proposals shall provide a PIM that allows at least the following reasoning tasks (on classes): &
+	\\ \hline
+6.5.4.5.1 &
+ Check satisfiability of a given class expression;&
+  Query Operation with query parameter
+	\\ \hline
+6.5.4.5.2 &
+Check subsumption of a given class expression by another class
+expression; &
+   See 6.5.4.4.2
+	\\ \hline
+6.5.4.5.3 &
+ List the classes that subsumes a given class expression; &
+   See 6.5.4.5.1
+	\\ \hline
+6.5.4.5.4 &
+ List the classes that are subsumed by a given class expression;&
+   See 6.5.4.5.1
+	\\ \hline
+6.5.4.5.5 &
+ Check equivalency of a given class expression in another class expression;&
+   See 6.5.4.4.2
+	\\ \hline
+6.5.4.5.6 &
+ List the classes that are equivalent to a given class expression;&
+   See 6.5.4.5.1
+	\\ \hline
+6.5.4.6 &
+ Proposals shall provide a PIM that allows at least the following reasoning tasks
+(on instances):&
+	\\ \hline
+6.5.4.6.1 &
+Check if a given instance is an instance of a given class expression; &
+   See 6.5.4.4.2
+	\\ \hline
+6.5.4.6.2 &
+ List all known instances of a given class expression;&
+   See 6.5.4.5.1
+	\\ \hline
+6.5.4.6.3 &
+List all answers to a given Conjunctive Query Answering (see [CQA]); &
+   See 6.5.4.5.1
+	\\ \hline
+	
+6.5.5 &
+ Instances in a KB -
+Proposals shall provide a PIM that defines at least the following capabilities:&
+	\\ \hline
+6.5.5.1 &
+Creation of an instance of a class. &
+See 6.5.3.1
+\\ \hline
+6.5.5.2 &
+Deletion of an instance. &
+See 6.5.3.2
+	\\ \hline
+6.5.5.3 &
+Modification of the values of the properties of an instance (add, remove, get and set the values of). &
+See 6.5.3.2
+	\\ \hline
+6.5.6 &
+Proposals shall provide a PIM that defines at least the following capabilities: &
+	\\ \hline
+6.5.6.1 &
+Load a RDF or an OWL file in the KB (from the web, and/or from a local file store, ...); &
+A Structured KR may be of IO[KnowledgeManifestation] type, and calling the run functionality of this type executes an import task, returning a Knowledge Manifestation.
+Lifting Operations are provided from KnowledgeManifestation to KnowledgeExpression and further
+to Knowledge Asset.
+	\\ \hline
+6.5.6.2 &
+Unload (i.e. remove from the list of known ontologies) an ontology from a KB, if possible; &
+An Update Operation is provided for mutable KPs, to change its state, including adding or
+removing KRs from its registry.
+	\\ \hline
+6.5.6.3 &
+Export an ontology in a serialized form (rdf/xml...). &
+Lowering Operations are provided from Knowledge Asset to Knowledge Expression to Knowledge Manifestation.
+A Structured KR may be of IO[Unit] type, and calling the run functionality of this type executes an export task.
+	\\ \hline
+6.5.7 &
+ PSMs &
+	\\ \hline
+6.5.7.1 &
+Proposals shall specify a platform mapping that fully maps the PIM into Java interface such that the service can be accessed from a Java application. &
+ https://github.com/ag-csw/Java4CL/tree/java8/api4kb
+	\\ \hline
+6.5.7.2 &
+ Proposals shall specify a platform mapping that fully maps the PIM into WSDL [WSDL] such that the service can be accessed from a WS-I Basic Profile 1.1 compliant client.&
+	\\ \hline
+6.5.7.3 &
+Proposals shall define the RESTful platform [RESTful] to which they map and provide a mapping that defines how to access a service implementing the PIM from a RESTful client.
+Note that the “PSM for REST” is not required to be a full map for the PIM. &
+	\\ \hline
+6.5.7.4 &
+ Proposals shall specify one or more PSMs (e.g., OWL notation, XML Schema) for the serialization of knowledge base schemas and knowledge base populations. This PSM should correspond to the reference information model PIM that is required by 6.5.1.The proposal shall use one of the existing interchange formats already defined for OWL and RDF.&
+   \\ RDF is all that is necessary for the Description format, although it is backed by a model of higher expressivity.
+   \\ I see no need to specify a particular RDF format for this Description, as whatever we pick will go out of fashion eventually.
+   \\ We could specify a particular RDF format that all KPs are required to accept?
+	\\ \hline
+
 
 \end{longtable}
 \end{center}
@@ -819,6 +1102,8 @@ serve as a conceptual model for concrete APIs for Knowledge Platforms, including
 This \OMGSpec/ responds to the
 Application Programming Interfaces (API) to Knowledge Bases (KB) RFP (OMG document ad/2010-06-09)
  \cite{RFP}.
+ 
+ \ednote{TODO: use the sections from the RFP Scope section (6.2).}
 
 
 \section{Background Information}
@@ -830,6 +1115,9 @@ machine-processable texts that carry a formal semantics.
 % Can't use \begin{inscope}, as that creates an itemize environment
 The following are within the scope of this \OMGSpec/:
 \ednote{[Tara Athan 2015-06-09] TODO: This is the point after which DOL stuff remains.}
+\todonote[author=Tara Athan,date=D:201110182133+02'00', type=todo]{This is the point after which DOL stuff remains.
+Testing newcommand* definition...
+}
 \begin{enumerate}
 \item\label{it:scope-heterogeneous} homogeneous OMS as well as heterogeneous OMS (OMS that consist of parts, which are written in different languages);
 \item mappings between OMS (mapping OMS symbols to OMS symbols);
@@ -1485,33 +1773,6 @@ semantics.  ``Without a logical semantics'' in this definition means that annota
 not considered sentences of that OMS.
   \end{note}
 
-  % \termdefinition{datatype}{``consists of a lexical space, a value space and a lexical-to-value mapping \textins{and} is identified by one or more URI
-  %   references'' \nisref{SOURCE: W3C/TR REC-rdf-concepts:2004, Section 5}}
-  % \begin{note}
-  %   ``Datatypes are used \textelp{} in the representation of values such as integers, floating point numbers and dates.'' \nisref{W3C/TR REC-rdf-concepts:2004, Section 3.3}     
-  % \end{note}
-  
-  % \termdefinition{literal}{``contains one or two named components. All literals have a lexical form being a Unicode\todonote[author=Christoph Lange,date=D:201109071635+02'00',type=q-all]{The RDF spec cites Unicode here; do we also have to cite Unicode, or can we ``inherit'' that from the RDF spec?  Note that meanwhile we have \nisref{ISO/IEC 10646}.} [UNICODE] string, which SHOULD be in Normal Form C [NFC]. Plain literals have a lexical form and optionally a language tag as defined by [RFC-3066], normalized to lowercase. Typed literals have a lexical form and a datatype URI being an RDF URI reference.'' \nisref{SOURCE: W3C/TR REC-rdf-concepts:2004, Section 6.5}}
-  % \begin{note}
-  %   Literals are used to identify values such as numbers and dates by means of a lexical representation. Anything represented by a literal could also be represented by a URI, but it is often more convenient or intuitive to use literals. \nisref{SOURCE: W3C/TR REC-rdf-concepts:2004, Section 3.4}    
-  % \end{note}
-  
-  % \termdefinition{annotation subject}{any \termref{element} of an OMS to which information is attached via an \termref{annotation}}
-  
-  % \termdefinition{annotation object}{non-logical piece of information to be associated with an \termref{annotation subject}; a \termref{resource} or a \termref{literal}}
-  
-  % \termdefinition{annotation property}{OMS entity that represents a set of pairs $(s, o)$, where $s$ is an annotation subject and $o$ is an annotation object}\todonote{TM: why a set of pairs and not just one pair?}
-  % \begin{note}
-  %   Adapted from \nisref{W3C/TR REC-owl2-syntax:2009, Section 5.5}
-  % \end{note}
- 
-%  \termdefinition{literate programming}{writing style of freely interweaving natural language documentation and formal expressions, referencing each other in a fine-grained way}
-%  \begin{note}
-%    Adapted from \cite{Knuth:LiterateProgramming1992}    
-%  \end{note}
-%  \begin{note}
-%    The particular strength of literate programming is that one can generate both a reference manual and compilable/executable code (here: a formal OMS) from the same source, which facilitates maintenance.
-%  \end{note}
 
   \termdefinition{OMS documentation}{set of all annotations\index{annotation} to an \termref{OMS}, plus any other documents and explanatory comments generated during or after development or deployment of the OMS.}
   \begin{note}
